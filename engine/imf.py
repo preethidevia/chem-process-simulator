@@ -17,7 +17,6 @@ def explain_imf():
     return ("Intermolecular forces (IMFs) affect phase behavior, "
             "boiling point, and solvent selection. Weak IMFs = easier to vaporize.")
 
-# ------------------ Optimization for IMFs ------------------
 def optimize_phase(boiling_point=350, T_min=300, T_max=900):
     """
     Suggests temperature closest to desired phase (liquid or gas)

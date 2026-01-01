@@ -16,7 +16,6 @@ def energy_cost(delta_H, conversion):
     """Estimate energy cost"""
     return abs(delta_H) * conversion
 
-# ------------------ Optimization for Thermodynamics ------------------
 def optimize_energy(delta_H, delta_S):
     """
     Finds temperature with lowest energy cost while maintaining spontaneity (ΔG < 0)

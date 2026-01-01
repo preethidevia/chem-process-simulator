@@ -23,7 +23,6 @@ def concentration_vs_time(rate, C0=1.0, t_end=50, steps=100):
     C = C0 * np.exp(-rate * t)
     return t, C
 
-# ------------------ Optimization for Kinetics ------------------
 def optimize_rate(A=1e7, Ea=80000):
     """
     Finds the temperature that maximizes reaction rate in a practical range

@@ -18,7 +18,6 @@ def equilibrium_constant(delta_G, T):
 def yield_from_equilibrium(K):
     return K / (1 + K)
 
-# ------------------ Optimization for Equilibrium ------------------
 def optimize_equilibrium(delta_H, delta_S):
     """
     Finds temperature that maximizes reaction yield
