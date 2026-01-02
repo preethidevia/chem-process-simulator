@@ -9,12 +9,34 @@ This project is a **modular web app** that integrates key AP Chemistry topics an
 - **Acids & Bases:** pH calculation, buffer safety, optimal hydrogen ion concentration.
 - **Intermolecular Forces (IMFs):** Phase prediction, impact of IMFs, temperature optimization for desired phase.
 
+
 ## Features
-- Reaction kinetics & reactor behavior
-- Thermodynamic feasibility
-- Equilibrium optimization
-- Acid–base process control
-- Intermolecular forces & separations
+
+- **Kinetics Module**
+  - Zeroth, First, and Second order reactions
+  - Arrhenius rate constants
+  - Half-life calculations
+  - Concentration vs time graphs
+  - Maxwell-Boltzmann distribution with activation energy
+  - Nuclear decay and common elements
+
+- **Thermodynamics**
+  - ΔG computation
+  - Spontaneity check
+
+- **Equilibrium**
+  - Equilibrium constant K
+  - Percent conversion
+  - Le Châtelier's principle effects
+
+- **Acids & Bases**
+  - pH calculation
+  - Titration curves
+  - Buffer effects
+
+- **Intermolecular Forces**
+  - Vapor pressure curves
+  - Phase prediction
 
 ## Why This Matters
 This project demonstrates how microscopic chemistry concepts
@@ -26,9 +48,13 @@ scale into industrial chemical processes.
 - NumPy
 - Matplotlib
 
-**How to Run Locally:**
+## How to Run Locally
 
-1. Clone repo:
-   ```bash
-   git clone https://github.com/YOURUSERNAME/chem-process-simulator.git
-   cd chem-process-simulator
+```bash
+git clone https://github.com/yourusername/chem-process-simulator.git
+cd chem-process-simulator
+python -m venv venv
+venv\Scripts\activate  # Windows
+source venv/bin/activate  # macOS/Linux
+pip install -r requirements.txt
+streamlit run app.py

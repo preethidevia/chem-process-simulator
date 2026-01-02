@@ -1,19 +1,8 @@
-#Implement:
-#Equilibrium constant K
-#Le Châtelier effects
-#Yield vs temperature/pressure
-#Outputs:
-#% conversion
-#Optimal conditions
-#AP Chem: Equilibrium
-#ChemE: Process optimization
-
-import numpy as np
-
-R = 8.314
-
-def equilibrium_constant(delta_h, T):
-    return np.exp(-delta_h * 1000 / (R * T))
+def equilibrium_constant(delta_h_kj, T, R=8.314):
+    # van 't Hoff approximation
+    delta_h = delta_h_kj * 1000
+    K = np.exp(-delta_h / (R*T))
+    return K
 
 def percent_conversion(K):
-    return (K / (1 + K)) * 100
+    return K / (1 + K) * 100

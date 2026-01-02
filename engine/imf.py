@@ -1,19 +1,12 @@
-#Implement:
-#Vapor pressure estimation
-#Phase prediction
-#Solvent effects
-#Outputs:
-#Phase (gas/liquid)
-#Separation feasibility
-#AP Chem: IMFs
-#ChemE: Materials & separation
-
-import numpy as np
-
 def vapor_pressure_curve():
-    T = np.linspace(250, 600, 200)
-    P = np.exp(-5000 / T)
-    return T, P
+    T = list(range(250,1001,25))
+    Pvap = [0.01*(temp-250)**1.5 for temp in T]
+    return T, Pvap
 
 def phase_prediction(T, P):
-    return "Gas" if T > 373 and P < 5 else "Liquid"
+    if T < 300:
+        return "Solid"
+    elif T < 600:
+        return "Liquid"
+    else:
+        return "Gas"
