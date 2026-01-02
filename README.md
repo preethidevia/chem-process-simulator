@@ -9,12 +9,22 @@ This project is a **modular web app** that integrates key AP Chemistry topics an
 - **Acids & Bases:** pH calculation, buffer safety, optimal hydrogen ion concentration.
 - **Intermolecular Forces (IMFs):** Phase prediction, impact of IMFs, temperature optimization for desired phase.
 
-**Features:**
-- Interactive sliders for temperature, pressure, concentration, and pH.
-- Real-time graphs for kinetics and other metrics.
-- Optimization modules in each topic, showing **practical vs theoretical conditions**.
-- Clear explanations of concepts for each section.
-- Engineering tradeoff panel demonstrating real-world chemical engineering decision-making.
+## Features
+- Reaction kinetics & reactor behavior
+- Thermodynamic feasibility
+- Equilibrium optimization
+- Acid–base process control
+- Intermolecular forces & separations
+
+## Why This Matters
+This project demonstrates how microscopic chemistry concepts
+scale into industrial chemical processes.
+
+## Tech Stack
+- Python
+- Streamlit
+- NumPy
+- Matplotlib
 
 **How to Run Locally:**
 

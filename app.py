@@ -4,114 +4,200 @@
 #Reaction selection dropdown
 
 import streamlit as st
+import numpy as np
 import matplotlib.pyplot as plt
 
 from engine import (
-    reaction_rate, concentration_vs_time, optimize_rate,
-    gibbs_free_energy, energy_cost, optimize_energy,
-    equilibrium_constant, yield_from_equilibrium, optimize_equilibrium,
-    calculate_pH, buffer_safe, optimize_pH,
-    phase_state, explain_imf, optimize_phase
+    kinetics,
+    thermodynamics,
+    equilibrium,
+    acids_bases,
+    imf
 )
 
-st.set_page_config(page_title="ChemE Simulator", layout="wide")
-st.title("Computational Chemical Engineering Simulator")
+st.set_page_config(page_title="ChemE Process Simulator", layout="wide")
+st.title("🧪 Chemical Engineering Process Simulator")
+st.caption("AP Chemistry Concepts → Chemical Engineering Decisions")
 
-st.write(
-    "This simulator integrates AP Chemistry topics (kinetics, thermodynamics, equilibrium, "
-    "acids/bases, and intermolecular forces) into an interactive web app with engineering tradeoffs."
+# ======================================
+# GLOBAL CONTROLS
+# ======================================
+st.sidebar.header("Global Process Conditions")
+
+temperature = st.sidebar.slider("Temperature (K)", 250, 1000, 500)
+pressure = st.sidebar.slider("Pressure (atm)", 1, 20, 5)
+initial_conc = st.sidebar.slider("Initial Concentration (M)", 0.1, 2.0, 1.0)
+
+reaction_type = st.sidebar.selectbox(
+    "Reaction Type",
+    ["First Order", "Second Order"]
 )
 
-# user inputs
-st.sidebar.header("Operating Conditions")
-temperature = st.sidebar.slider("Temperature (K)", 300, 900, 500)
-pressure = st.sidebar.slider("Pressure (atm)", 1, 50, 10)
-initial_concentration = st.sidebar.slider("Initial Concentration (mol/L)", 0.1, 2.0, 1.0)
-delta_H = st.sidebar.number_input("ΔH (J/mol)", value=-80000)
-delta_S = st.sidebar.number_input("ΔS (J/mol·K)", value=-150.0)
-H_conc = st.sidebar.slider("Hydrogen Ion Concentration (mol/L)", 1e-9, 1e-2, 1e-7, format="%.1e")
+# ======================================
+# KINETICS
+# ======================================
+st.header("⏱️ Reaction Kinetics (AP Chem → Reactor Design)")
 
-# kinetics
-st.subheader("Kinetics")
-st.write("Reaction rate depends on temperature and activation energy (Arrhenius equation).")
-rate = reaction_rate(temperature)
-t, C = concentration_vs_time(rate, initial_concentration)
+compound = st.selectbox(
+    "Select Reactant",
+    ["Generic A", "Hydrogen Peroxide", "Nitrogen Dioxide"]
+)
+
+order = st.selectbox(
+    "Reaction Order",
+    ["Zeroth Order", "First Order", "Second Order"]
+)
+
+time = np.linspace(0, 50, 200)
+
+# Compute concentration
+if order == "Zeroth Order":
+    conc = kinetics.zeroth_order_concentration(
+        initial_conc, temperature, time, compound
+    )
+    k = kinetics.arrhenius_rate(temperature, compound)
+    half_life = kinetics.zeroth_order_half_life(initial_conc, k)
+
+elif order == "First Order":
+    conc = kinetics.first_order_concentration(
+        initial_conc, temperature, time, compound
+    )
+    k = kinetics.arrhenius_rate(temperature, compound)
+    half_life = kinetics.first_order_half_life(k)
+
+else:
+    conc = kinetics.second_order_concentration(
+        initial_conc, temperature, time, compound
+    )
+    k = kinetics.arrhenius_rate(temperature, compound)
+    half_life = kinetics.second_order_half_life(initial_conc, k)
+
+# Plot
 fig, ax = plt.subplots()
-ax.plot(t, C)
+ax.plot(time, conc)
 ax.set_xlabel("Time")
-ax.set_ylabel("Concentration (mol/L)")
+ax.set_ylabel("Concentration (M)")
+ax.set_title(f"{order} Reaction — {compound}")
 st.pyplot(fig)
 
-st.info(f"Reaction Rate Formula: rate = A * exp(-Ea / (R * T))\n"
-        f"A = {1e7}, Ea = 80000 J/mol, R = 8.314 J/mol·K, T = {temperature} K")
-opt_T, opt_rate = optimize_rate()
-st.write(f"Practical optimization: best T = {opt_T} K, rate = {opt_rate:.2e} 1/s")
+# Data table
+st.subheader("📊 Concentration Data")
+data = {
+    "Time": time,
+    "Concentration (M)": conc
+}
+st.dataframe(data)
 
-# thermodynamics
-st.subheader("Thermodynamics")
-st.write("Gibbs free energy indicates spontaneity; energy cost affects efficiency.")
-delta_G = gibbs_free_energy(delta_H, delta_S, temperature)
-energy = energy_cost(delta_H, delta_G)
-st.metric("ΔG (J)", f"{delta_G:.1f}")
-st.metric("Energy Cost (J)", f"{energy:.1f}")
+# Half-life display
+st.metric("Half-Life", f"{half_life:.2f} time units")
 
-with st.expander("Show Formulas"):
-    st.write("Gibbs Free Energy: ΔG = ΔH - TΔS")
-    st.write(f"ΔH = {delta_H} J/mol, ΔS = {delta_S} J/mol·K, T = {temperature} K")
-    st.write("Energy cost approximation: |ΔH| × conversion")
+st.markdown("""
+### 📐 Governing Equations
+- **Zeroth Order:** `[A] = [A₀] − kt`
+- **First Order:** `ln[A] = −kt + ln[A₀]`
+- **Second Order:** `1/[A] = kt + 1/[A₀]`
 
-opt_T_e, opt_energy = optimize_energy(delta_H, delta_S)
-st.write(f"Optimization: T = {opt_T_e} K, lowest energy while spontaneous = {opt_energy:.1f} J")
+### 🧠 What This Means in Real Life
+- **Zeroth Order:** Rate limited by surface or catalyst  
+- **First Order:** Constant half-life (radioactive decay, gas reactions)  
+- **Second Order:** Rate depends heavily on concentration  
 
-# equilibrium
-st.subheader("Equilibrium")
-st.write("Equilibrium constant determines reaction yield.")
-K = equilibrium_constant(delta_G, temperature)
-yield_percent = yield_from_equilibrium(K) * 100
-st.metric("Yield (%)", f"{yield_percent:.1f}")
+### 🏭 Chemical Engineering Insight
+Reaction order determines:
+- Reactor size  
+- Throughput  
+- Safety margins  
+- Cost efficiency  
+""")
 
-with st.expander("Show Formulas"):
-    st.write("Equilibrium constant: K = exp(-ΔG / (R*T))")
-    st.write("Yield approximation: Yield = K / (1 + K)")
-    st.write(f"ΔG = {delta_G}, R = 8.314 J/mol·K, T = {temperature} K")
+# ======================================
+# THERMODYNAMICS
+# ======================================
+st.header("🔥 Thermodynamics (Energy Feasibility)")
 
-opt_T_y, opt_yield = optimize_equilibrium(delta_H, delta_S)
-st.write(f"Optimization: T = {opt_T_y} K, max yield = {opt_yield*100:.1f}%")
+delta_h = st.slider("ΔH (kJ/mol)", -150.0, 150.0, -50.0)
+delta_s = st.slider("ΔS (J/mol·K)", -200.0, 200.0, -80.0)
 
-# acids and bases
-st.subheader("Acids & Bases")
-st.write("pH affects stability and safety; buffers maintain desired range.")
-pH = calculate_pH(H_conc)
-safe_buffer = buffer_safe(pH)
-st.metric("pH", f"{pH:.2f}")
-st.write("Safe buffer range: 6.5 – 8.5")
-if safe_buffer: st.success("pH is within safe range.")
-else: st.error("pH outside safe range!")
+delta_g, spontaneous = thermodynamics.gibbs_energy(delta_h, delta_s, temperature)
 
-with st.expander("Show Formula"):
-    st.write("pH = -log10([H+])")
-    st.write(f"[H+] = {H_conc} mol/L")
+st.metric("ΔG (kJ/mol)", round(delta_g, 2))
+st.write("Spontaneous?" , "✅ Yes" if spontaneous else "❌ No")
 
-opt_H, opt_pH = optimize_pH()
-st.write(f"Optimization: H+ = {opt_H:.2e}, pH = {opt_pH:.2f} (safe buffer)")
+st.markdown("""
+**Equation:**  
+ΔG = ΔH − TΔS
 
-# intermolecular forces
-st.subheader("Intermolecular Forces (IMFs)")
-st.write(explain_imf())
-phase = phase_state(temperature)
-st.metric("Phase", phase)
+**Real Meaning:**  
+Determines whether a process is energetically worth running at scale.
+""")
 
-with st.expander("Show Explanation"):
-    st.write("Phase is determined based on temperature and intermolecular forces:")
-    st.write("If T > boiling point → Gas, else → Liquid")
-    st.write(f"Current T = {temperature} K, Boiling point = 350 K")
+# ======================================
+# EQUILIBRIUM
+# ======================================
+st.header("⚖️ Equilibrium & Yield Optimization")
 
-opt_T_phase, opt_phase_state = optimize_phase()
-st.write(f"Optimization: T = {opt_T_phase} K, phase = {opt_phase_state}")
+K = equilibrium.equilibrium_constant(delta_h, temperature)
+conversion = equilibrium.percent_conversion(K)
 
-# description
-st.subheader("Overview")
-st.write(
-    "All modules include optimization. Students can see how changing temperature, concentration, "
-    "or pH affects rate, yield, energy cost, and phase."
-)
+st.metric("Equilibrium Constant (K)", round(K, 3))
+st.metric("Percent Conversion (%)", round(conversion, 1))
+
+st.markdown("""
+**Le Châtelier’s Principle:**  
+Temperature and pressure shifts affect yield.
+
+**ChemE Use:**  
+Maximize product while minimizing energy & cost.
+""")
+
+# ======================================
+# ACIDS & BASES
+# ======================================
+st.header("🧪 Acids & Bases (Process Control)")
+
+acid_added = st.slider("Acid/Base Added (mol)", -0.5, 0.5, 0.0)
+pH = acids_bases.calculate_pH(acid_added)
+
+st.metric("pH", round(pH, 2))
+
+curve_x, curve_y = acids_bases.titration_curve()
+
+fig, ax = plt.subplots()
+ax.plot(curve_x, curve_y)
+ax.axhline(7, linestyle="--")
+ax.set_xlabel("Added Base (mol)")
+ax.set_ylabel("pH")
+st.pyplot(fig)
+
+st.markdown("""
+**Key Rule:**  
+At half-equivalence → pH = pKa
+
+**ChemE Meaning:**  
+Maintains safe operating conditions in reactors and pipelines.
+""")
+
+# ======================================
+# INTERMOLECULAR FORCES
+# ======================================
+st.header("🌡️ Intermolecular Forces & Phase Behavior")
+
+temp_range, vapor_pressure = imf.vapor_pressure_curve()
+
+fig, ax = plt.subplots()
+ax.plot(temp_range, vapor_pressure)
+ax.set_xlabel("Temperature (K)")
+ax.set_ylabel("Vapor Pressure")
+st.pyplot(fig)
+
+phase = imf.phase_prediction(temperature, pressure)
+
+st.write("Predicted Phase:", phase)
+
+st.markdown("""
+**AP Chem:**  
+Stronger IMFs → lower vapor pressure.
+
+**ChemE:**  
+Used in distillation & separation design.
+""")

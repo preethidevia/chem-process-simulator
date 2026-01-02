@@ -9,29 +9,53 @@
 
 import numpy as np
 
-def reaction_rate(T, A=1e7, Ea=80000):
-    """
-    Calculate reaction rate using Arrhenius equation.
-    """
-    return A * np.exp(-Ea / (8.314 * T))
+R = 8.314  # J/mol·K
 
-def concentration_vs_time(rate, C0=1.0, t_end=50, steps=100):
-    """
-    Compute concentration over time for first-order reaction
-    """
-    t = np.linspace(0, t_end, steps)
-    C = C0 * np.exp(-rate * t)
-    return t, C
+# -----------------------------------
+# Compound database (simplified)
+# -----------------------------------
+COMPOUNDS = {
+    "Generic A": {"A": 1e7, "Ea": 50000},
+    "Hydrogen Peroxide": {"A": 2e8, "Ea": 75000},
+    "Nitrogen Dioxide": {"A": 5e6, "Ea": 42000}
+}
 
-def optimize_rate(A=1e7, Ea=80000):
-    """
-    Finds the temperature that maximizes reaction rate in a practical range
-    """
-    best_T = 0
-    max_rate = 0
-    for T in range(300, 900, 10):
-        r = reaction_rate(T, A, Ea)
-        if r > max_rate:
-            max_rate = r
-            best_T = T
-    return best_T, max_rate
+def arrhenius_rate(T, compound):
+    params = COMPOUNDS[compound]
+    A = params["A"]
+    Ea = params["Ea"]
+    return A * np.exp(-Ea / (R * T))
+
+# -----------------------------------
+# Zeroth Order
+# [A] = [A0] − kt
+# -----------------------------------
+def zeroth_order_concentration(A0, T, t, compound):
+    k = arrhenius_rate(T, compound)
+    conc = A0 - k * t
+    return np.maximum(conc, 0)
+
+def zeroth_order_half_life(A0, k):
+    return A0 / (2 * k)
+
+# -----------------------------------
+# First Order
+# ln[A] = −kt + ln[A0]
+# -----------------------------------
+def first_order_concentration(A0, T, t, compound):
+    k = arrhenius_rate(T, compound)
+    return A0 * np.exp(-k * t)
+
+def first_order_half_life(k):
+    return np.log(2) / k
+
+# -----------------------------------
+# Second Order
+# 1/[A] = kt + 1/[A0]
+# -----------------------------------
+def second_order_concentration(A0, T, t, compound):
+    k = arrhenius_rate(T, compound)
+    return 1 / (k * t + (1 / A0))
+
+def second_order_half_life(A0, k):
+    return 1 / (k * A0)
