@@ -4,20 +4,31 @@ import matplotlib.pyplot as plt
 from engine import kinetics
 
 st.set_page_config(page_title="Kinetics Module", layout="wide")
-st.title("⚗️ Kinetics Module")
+st.title("Kinetics Module")
 
-# -------------------------------
-# Sidebar Inputs
-# -------------------------------
+with st.sidebar.expander("Kinetics Glossary"):
+    st.markdown("""
+- **Reaction Order:** How rate depends on concentration  
+- **Rate Constant (k):** Speed factor of reaction  
+- **Activation Energy:** Energy barrier to reaction  
+- **Half-Life:** Time for concentration to halve  
+- **Rate Law:** Mathematical rate expression  
+- **Kinetic Energy:** Energy of motion  
+""")
+
 st.sidebar.subheader("Kinetics Inputs")
 compound = st.sidebar.selectbox("Select Reactant", list(kinetics.COMPOUNDS.keys()))
 order = st.sidebar.selectbox("Reaction Order", ["Zeroth Order", "First Order", "Second Order"])
+if "Nuclear" in compound and order != "First Order":
+    st.sidebar.error(
+        "**Radioactive decay is ALWAYS first-order.**\n\n"
+        "This is because each nucleus decays independently, "
+        "and the probability of decay is constant.\n\n"
+        "Zeroth- and second-order models are **non-physical** for nuclear reactions."
+    )
 temperature = st.sidebar.slider("Temperature (K)", 250, 20000, 1000)
 initial_conc = st.sidebar.slider("Initial Concentration (M)", 0.1, 10.0, 1.0)
 
-# -------------------------------
-# Compute Kinetics
-# -------------------------------
 time = np.linspace(0, 50, 300)
 k = kinetics.arrhenius_rate(temperature, compound)
 
@@ -43,9 +54,6 @@ else:
     rate_law = "Rate = k[A]^2"
     half_life_eq = "1/(k[A]₀)"
 
-# -------------------------------
-# Sidebar Outputs
-# -------------------------------
 Ea = kinetics.COMPOUNDS[compound].get("Ea", None)
 st.sidebar.subheader("Kinetics Outputs")
 st.sidebar.metric("Rate Constant k", f"{k:.2e} s⁻¹")
@@ -54,12 +62,11 @@ st.sidebar.metric("Activation Energy Ea", f"{Ea:.2e} J/mol" if Ea else "N/A")
 
 # Half-life notes
 if order == "Zeroth Order":
-    st.sidebar.info("⚡ Half-life decreases as concentration decreases (0th order).")
+    st.sidebar.info("Half-life decreases as concentration decreases (0th order).")
 elif order == "First Order":
-    st.sidebar.info("⚡ Half-life constant (1st order).")
+    st.sidebar.info("Half-life constant (1st order).")
 else:
-    st.sidebar.info("⚡ Half-life increases as concentration decreases (2nd order).")
-
+    st.sidebar.info("Half-life increases as concentration decreases (2nd order).")
 st.sidebar.markdown(f"""
 **Equations Used:**
 
@@ -73,10 +80,7 @@ st.sidebar.markdown(f"""
 - R = 8.314 J/mol·K
 """)
 
-# -------------------------------
-# Concentration vs Time Graph
-# -------------------------------
-st.subheader("📈 Concentration vs Time")
+st.subheader("Concentration vs Time")
 fig, ax = plt.subplots()
 ax.plot(time, y, color="#1f77b4", lw=2)
 ax.set_xlabel("Time")
@@ -86,16 +90,10 @@ ax.axvline(half_life, color="red", linestyle="--", label="Half-Life")
 ax.legend()
 st.pyplot(fig)
 
-# -------------------------------
-# Data Table
-# -------------------------------
-st.subheader("📊 Data Points")
+st.subheader("Data Points")
 st.dataframe({"Time": time, y_label: y})
 
-# -------------------------------
-# Maxwell-Boltzmann Graph
-# -------------------------------
-st.subheader("⚡ Molecules vs Kinetic Energy (MB Distribution)")
+st.subheader("Molecules vs Kinetic Energy (MB Distribution)")
 mass = kinetics.COMPOUNDS[compound].get("mass", 5e-26)
 KE, f_v = kinetics.maxwell_boltzmann_distribution(temperature, mass)
 
@@ -113,37 +111,47 @@ ax2.set_xlim([0, max(KE)*1.05])
 ax2.set_ylim([0,1.05])
 st.pyplot(fig2)
 
-# -------------------------------
-# Fraction reactive note
-# -------------------------------
+st.subheader("Data Points")
+st.dataframe({"Kinetic Energy (J)": KE, "Fraction of Molecules": f_v})
+
+st.caption(
+    "Each row represents a group of molecules with a given kinetic energy. "
+    "Only molecules with KE ≥ Ea can successfully react."
+)
+
 fraction_reactive = np.sum(f_v[KE>=Ea])/np.sum(f_v) if Ea else 0
 if fraction_reactive < 0.05:
-    st.warning(f"⚠ Only {fraction_reactive*100:.1f}% of molecules exceed Ea. Increase temperature to accelerate.")
+    st.warning(f"Only {fraction_reactive*100:.1f}% of molecules exceed Ea. Increase temperature to accelerate. Activation energy is too high for efficient reaction.")
 elif fraction_reactive < 0.2:
-    st.info(f"💡 About {fraction_reactive*100:.1f}% exceed Ea. Reaction will be slow.")
+    st.info(f"About {fraction_reactive*100:.1f}% exceed Ea. Reaction will be slow.")
 else:
-    st.success(f"✅ {fraction_reactive*100:.1f}% exceed Ea. Reaction likely efficient.")
+    st.success(f"{fraction_reactive*100:.1f}% exceed Ea. Reaction likely efficient.")
 
-# -------------------------------
-# Explanations
-# -------------------------------
+if "Nuclear" in compound:
+    st.info(
+        "**Radioactive decay does NOT depend on molecular collisions.**\n\n"
+        "Unlike chemical reactions, nuclear decay does not require activation energy "
+        "or particle collisions. Temperature and pressure do not affect its rate.\n\n"
+        "The Maxwell–Boltzmann distribution is shown here for comparison only."
+    )
+
 st.markdown("""
-### 📐 Real-Life Graph Interpretation
+### Real-Life Graph Interpretation
 - Zeroth Order: Rate independent of concentration. Linear decrease.
 - First Order: Half-life constant, typical for radioactive decay.
 - Second Order: Rate depends on [A]^2, e.g., dimerization.
 
-### 🧠 Half-Life
+### Half-Life
 - Zeroth: t₁/₂ = [A]₀ / k
 - First: t₁/₂ = ln(2)/k
 - Second: t₁/₂ = 1/(k[A]₀)
 
-### ⚡ Maxwell-Boltzmann
+### Maxwell-Boltzmann
 - Vertical line = Ea
 - Area right of line = fraction of molecules energetic enough to react
 - Higher T → more molecules surpass Ea → faster reactions
 
-### 🏭 Chemical Engineering Insight
+### Chemical Engineering Insight
 - Reaction order affects reactor design and throughput
 - Temperature affects reactive molecule fraction
 - Nuclear isotopes are always 1st order; incompatible orders show warnings

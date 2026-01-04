@@ -28,6 +28,3 @@ st.markdown("""
 3. Observe the graphs, tables, and computed outputs.
 4. Read the explanations for real-life applications and chemical engineering relevance.
 """)
-
-st.markdown("---")
-st.markdown("💡 **Tip:** Nuclear isotopes are always 1st order in Kinetics. Check the notes in the sidebar for special warnings or insights.")

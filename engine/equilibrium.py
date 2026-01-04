@@ -1,5 +1,6 @@
+import numpy as np
+
 def equilibrium_constant(delta_h_kj, T, R=8.314):
-    # van 't Hoff approximation
     delta_h = delta_h_kj * 1000
     K = np.exp(-delta_h / (R*T))
     return K

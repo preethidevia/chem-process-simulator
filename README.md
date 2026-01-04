@@ -21,22 +21,17 @@ This project is a **modular web app** that integrates key AP Chemistry topics an
   - Nuclear decay and common elements
 
 - **Thermodynamics**
-  - ΔG computation
-  - Spontaneity check
+  - 
 
 - **Equilibrium**
-  - Equilibrium constant K
-  - Percent conversion
-  - Le Châtelier's principle effects
+  - 
 
 - **Acids & Bases**
   - pH calculation
   - Titration curves
-  - Buffer effects
 
 - **Intermolecular Forces**
-  - Vapor pressure curves
-  - Phase prediction
+  - 
 
 ## Why This Matters
 This project demonstrates how microscopic chemistry concepts
@@ -48,13 +43,6 @@ scale into industrial chemical processes.
 - NumPy
 - Matplotlib
 
-## How to Run Locally
+## How to Run
 
-```bash
-git clone https://github.com/yourusername/chem-process-simulator.git
-cd chem-process-simulator
-python -m venv venv
-venv\Scripts\activate  # Windows
-source venv/bin/activate  # macOS/Linux
-pip install -r requirements.txt
-streamlit run app.py
+Visit https://chem-process-simulator.streamlit.app/

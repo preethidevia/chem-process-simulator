@@ -21,7 +21,6 @@ def arrhenius_rate(T, compound):
         Ea = params["Ea"]
         return A * np.exp(-Ea / (R * T))
 
-# Zeroth Order
 def zeroth_order_concentration(A0, T, t, compound):
     k = arrhenius_rate(T, compound)
     conc = A0 - k * t
@@ -30,7 +29,6 @@ def zeroth_order_concentration(A0, T, t, compound):
 def zeroth_order_half_life(A0, k):
     return A0 / k
 
-# First Order
 def first_order_concentration(A0, T, t, compound):
     k = arrhenius_rate(T, compound)
     return A0 * np.exp(-k * t)
@@ -38,7 +36,6 @@ def first_order_concentration(A0, T, t, compound):
 def first_order_half_life(k):
     return np.log(2) / k
 
-# Second Order
 def second_order_concentration(A0, T, t, compound):
     k = arrhenius_rate(T, compound)
     return 1 / (k * t + 1/A0)
@@ -46,7 +43,6 @@ def second_order_concentration(A0, T, t, compound):
 def second_order_half_life(A0, k):
     return 1 / (k * A0)
 
-# Maxwell-Boltzmann Distribution
 def maxwell_boltzmann_distribution(T, mass, num_points=300):
     kB = 1.380649e-23
     v_max = np.sqrt(10 * kB * T / mass)
