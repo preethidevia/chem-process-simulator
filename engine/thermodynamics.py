@@ -67,7 +67,6 @@ def substance_heating_curve(substance, T_initial=300, q_max=500):
     heat = np.linspace(0, q_max, 300)
 
     if substance == "Water (H2O)":
-        # Simplified phase-change curve
         temp = np.piecewise(
             heat,
             [heat < 100, (heat >= 100) & (heat < 300), heat >= 300],
@@ -84,7 +83,7 @@ def substance_heating_curve(substance, T_initial=300, q_max=500):
     return heat, temp
 
 def gibbs_energy(delta_h_kj, delta_s_j, T):
-    delta_h = delta_h_kj * 1000  # kJ → J
+    delta_h = delta_h_kj * 1000
     delta_g = delta_h - T*delta_s_j
     spontaneous = delta_g < 0
-    return delta_g/1000, spontaneous  # return kJ
+    return delta_g/1000, spontaneous

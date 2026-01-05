@@ -1,6 +1,6 @@
 # Computational Chemical Engineering Simulator
-
 This project is a **modular web app** that integrates key AP Chemistry topics and demonstrates chemical engineering thinking.  
+
 
 **Topics Included:**
 - **Kinetics:** Arrhenius equation, reaction rate, concentration vs time, optimal temperature for fastest rate.
@@ -12,30 +12,41 @@ This project is a **modular web app** that integrates key AP Chemistry topics an
 
 ## Features
 
+- **Intermolecular Forces Module**
+  - Potential energy vs. internuclear distance
+  - Vapor pressure vs. temperature relationships
+  - Boiling point and melting point trends
+  - Comparison of IMF strength across substances
+
+- **Properties Module**
+  - Periodic trends (atomic radius, electronegativity, ionization energy)
+  - Molecular polarity and intermolecular forces
+  - Phase prediction based on temperature
+  - Temperature-dependent kinetic energy
+
 - **Kinetics Module**
-  - Zeroth, First, and Second order reactions
-  - Arrhenius rate constants
-  - Half-life calculations
-  - Concentration vs time graphs
-  - Maxwell-Boltzmann distribution with activation energy
-  - Nuclear decay and common elements
+  - Zeroth-, first-, and second-order reaction models
+  - Arrhenius rate constants, activation energy, and half-life behavior
+  - Concentration vs. time graphs for different reaction orders
+  - Maxwell–Boltzmann distributions and nuclear decay comparisons
 
-- **Thermodynamics**
-  - 
+- **Thermodynamics Module**
+  - Reaction energy profiles (endo/exothermic)
+  - Activation energy, transition states, and catalysts
+  - Enthalpy (ΔH) calculations from formation data
+  - Heating and cooling curves with phase behavior
 
-- **Equilibrium**
-  - 
+- **Acids & Bases Module**
+  - Acid–base titration curves with equivalence points
+  - Stoichiometric concentration calculations
+  - pH changes during titration
+  - Absorbance vs. concentration (Beer–Lambert law)
 
-- **Acids & Bases**
-  - pH calculation
-  - Titration curves
-
-- **Intermolecular Forces**
-  - 
 
 ## Why This Matters
 This project demonstrates how microscopic chemistry concepts
 scale into industrial chemical processes.
+
 
 ## Tech Stack
 - Python
@@ -43,6 +54,6 @@ scale into industrial chemical processes.
 - NumPy
 - Matplotlib
 
-## How to Run
 
+## How to Run
 Visit https://chem-process-simulator.streamlit.app/

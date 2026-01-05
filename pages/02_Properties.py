@@ -74,7 +74,7 @@ display_sidebar_outputs(substance2, temperature)
 
 st.markdown("---")
 
-st.sidebar.subheader("Equations:")
+st.sidebar.subheader("Equations")
 
 st.sidebar.markdown(f"""
 **Average Kinetic Energy**
@@ -92,7 +92,7 @@ LDF < Dipole–Dipole < Hydrogen Bonding < Ionic Forces
 - MP ≤ T < BP → liquid  
 - T ≥ BP → gas
 
-**Constants:**
+**Constants**
 - R = 8.314 J·mol⁻¹·K⁻¹
 """)
 
@@ -118,55 +118,59 @@ def display_properties(substance, col):
 display_properties(substance1, cols[0])
 display_properties(substance2, cols[1])
 
-st.subheader("Periodic Trends")
+col1, col2 = st.columns(2)
 
-trend_y = st.selectbox(
-    "Select Trend",
-    ["Atomic Radius (pm)", "Electronegativity", "Ionization Energy (kJ/mol)"]
-)
+with col1:
+    st.subheader("Periodic Trends")
 
-fig1, ax1 = plt.subplots()
-ax1.plot(
-    PERIODIC_TRENDS["Atomic Number"],
-    PERIODIC_TRENDS[trend_y],
-    marker="o",
-    lw=2
-)
+    trend_y = st.selectbox(
+        "Select Trend",
+        ["Atomic Radius (pm)", "Electronegativity", "Ionization Energy (kJ/mol)"]
+    )
 
-ax1.set_xlabel("Atomic Number")
-ax1.set_ylabel(trend_y)
-ax1.set_title(f"{trend_y} vs Atomic Number")
+    fig1, ax1 = plt.subplots()
+    ax1.plot(
+        PERIODIC_TRENDS["Atomic Number"],
+        PERIODIC_TRENDS[trend_y],
+        marker="o",
+        lw=2
+    )
 
-st.pyplot(fig1)
+    ax1.set_xlabel("Atomic Number")
+    ax1.set_ylabel(trend_y)
+    ax1.set_title(f"{trend_y} vs Atomic Number")
 
-st.dataframe(PERIODIC_TRENDS)
+    st.pyplot(fig1)
 
-st.subheader("Intermolecular Forces vs Boiling Point")
+    st.dataframe(PERIODIC_TRENDS)
 
-imf_df = pd.DataFrame([
-    {
-        "Substance": name,
-        "Boiling Point (K)": data["bp"],
-        "IMF Strength": imf_strength(data["imf"]),
-        "IMF Type": data["imf"]
-    }
-    for name, data in SUBSTANCES.items()
-])
+with col2:
+    st.subheader("Intermolecular Forces vs Boiling Point")
 
-fig2, ax2 = plt.subplots()
+    imf_df = pd.DataFrame([
+        {
+            "Substance": name,
+            "Boiling Point (K)": data["bp"],
+            "IMF Strength": imf_strength(data["imf"]),
+            "IMF Type": data["imf"]
+        }
+        for name, data in SUBSTANCES.items()
+    ])
 
-ax2.bar(
-    imf_df["Substance"],
-    imf_df["Boiling Point (K)"]
-)
+    fig2, ax2 = plt.subplots()
 
-ax2.set_xlabel("Substance")
-ax2.set_ylabel("Boiling Point (K)")
-ax2.set_title("Effect of Intermolecular Forces on Boiling Point")
-ax2.tick_params(axis="x", rotation=45)
+    ax2.bar(
+        imf_df["Substance"],
+        imf_df["Boiling Point (K)"]
+    )
 
-st.pyplot(fig2)
-st.dataframe(imf_df)
+    ax2.set_xlabel("Substance")
+    ax2.set_ylabel("Boiling Point (K)")
+    ax2.set_title("Effect of Intermolecular Forces on Boiling Point")
+    ax2.tick_params(axis="x", rotation=45)
+
+    st.pyplot(fig2)
+    st.dataframe(imf_df)
 
 st.header("Properties Concepts")
 
@@ -187,4 +191,11 @@ Symmetrical molecules can be nonpolar even with polar bonds.
 - Explains **volatility**
 - Guides **separation processes**
 - Predicts **material handling constraints**
+""")
+
+st.markdown("""
+### Connection to Intermolecular Forces
+- Atomic size and electronegativity determine **IMF type and strength**
+- Stronger IMFs lead to **higher boiling points and lower vapor pressure**
+- Molecular properties explain **phase behavior and physical trends**
 """)

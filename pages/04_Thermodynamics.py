@@ -85,54 +85,58 @@ if catalyst:
 if has_intermediate:
     st.sidebar.info("Intermediate present in energy profile")
 
-st.subheader("Reaction Energy Profile")
+col1, col2 = st.columns(2)
 
-fig1, ax1 = plt.subplots()
-ax1.plot(x, energy_profile / 1000, lw=2)
+with col1:
+    st.subheader("Reaction Energy Profile")
 
-ax1.axhline(0, linestyle="--", color="gray", label="Reactants")
-ax1.axhline(delta_h / 1000, linestyle="--", color="green", label="Products")
+    fig1, ax1 = plt.subplots()
+    ax1.plot(x, energy_profile / 1000, lw=2)
 
-if delta_h > 0:
-    ax1.text(0.6, max(energy_profile)/1000 * 0.9, "Endothermic", color="red")
-elif delta_h < 0:
-    ax1.text(0.6, max(energy_profile)/1000 * 0.9, "Exothermic", color="blue")
-else:
-    ax1.text(0.6, max(energy_profile)/1000 * 0.9, "Neutral", color="black")
+    ax1.axhline(0, linestyle="--", color="gray", label="Reactants")
+    ax1.axhline(delta_h / 1000, linestyle="--", color="green", label="Products")
 
-ax1.set_xlabel("Reaction Coordinate")
-ax1.set_ylabel("Potential Energy (kJ/mol)")
-ax1.set_title("Reaction Energy Diagram")
-ax1.legend()
-st.pyplot(fig1)
+    if delta_h > 0:
+        ax1.text(0.6, max(energy_profile)/1000 * 0.9, "Endothermic", color="red")
+    elif delta_h < 0:
+        ax1.text(0.6, max(energy_profile)/1000 * 0.9, "Exothermic", color="blue")
+    else:
+        ax1.text(0.6, max(energy_profile)/1000 * 0.9, "Neutral", color="black")
 
-st.dataframe({
-    "Reaction Coordinate": x,
-    "Potential Energy (kJ/mol)": energy_profile / 1000
-})
+    ax1.set_xlabel("Reaction Coordinate")
+    ax1.set_ylabel("Potential Energy (kJ/mol)")
+    ax1.set_title("Reaction Energy Diagram")
+    ax1.legend()
+    st.pyplot(fig1)
 
-st.subheader("Heat Curve")
+    st.dataframe({
+        "Reaction Coordinate": x,
+        "Potential Energy (kJ/mol)": energy_profile / 1000
+    })
 
-fig2, ax2 = plt.subplots()
-ax2.plot(heat_q / 1000, temp_curve, lw=2, color="orange")
-ax2.set_xlabel("Heat Energy (kJ)")
-ax2.set_ylabel("Temperature (K)")
-ax2.set_title(f"Heating Curve — {selected_substance}")
-st.pyplot(fig2)
+with col2:
+    st.subheader("Heat Curve")
 
-st.dataframe({
-    "Heat Added (kJ)": heat_q / 1000,
-    "Temperature (K)": temp_curve
-})
+    fig2, ax2 = plt.subplots()
+    ax2.plot(heat_q / 1000, temp_curve, lw=2, color="orange")
+    ax2.set_xlabel("Heat Energy (kJ)")
+    ax2.set_ylabel("Temperature (K)")
+    ax2.set_title(f"Heating Curve — {selected_substance}")
+    st.pyplot(fig2)
 
-st.info(
-    "Heating curves show how temperature changes as heat is added. "
-    "Flat regions indicate phase changes where energy breaks intermolecular forces "
-    "instead of raising temperature."
-)
+    st.dataframe({
+        "Heat Added (kJ)": heat_q / 1000,
+        "Temperature (K)": temp_curve
+    })
+
+    st.info(
+        "Heating curves show how temperature changes as heat is added. "
+        "Flat regions indicate phase changes where energy breaks intermolecular forces "
+        "instead of raising temperature."
+    )
 
 st.sidebar.markdown("""
-### Equations:
+### Equations
 
 **Reaction Enthalpy**
 ΔH = ΣH(products) − ΣH(reactants)
@@ -179,7 +183,7 @@ st.markdown("""
 - Endothermic: temperature rises with heat input
 - Exothermic: temperature drops as heat is released
 
-## Chemical Engineering Context
+### Chemical Engineering Context
 
 - Determines **energy cost** of reactors
 - Guides **catalyst selection**
@@ -189,10 +193,8 @@ st.markdown("""
 
 st.markdown("""
 ### Connection to Kinetics
-
 - Higher temperature → higher average kinetic energy
 - More molecules exceed activation energy
 - Reaction rate increases (Arrhenius relationship)
-
 Thermodynamics explains **energy flow**, while kinetics explains **reaction speed**.
 """)

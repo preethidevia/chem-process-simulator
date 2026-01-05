@@ -5,18 +5,18 @@ st.set_page_config(
     layout="wide",
 )
 
-st.title("🧪 Chemical Engineering Process Simulator")
+st.title("Chemical Engineering Process Simulator")
 st.caption("Explore AP Chemistry concepts and Chemical Engineering applications")
 
 st.markdown("""
 Welcome! This simulator is designed to help visualize key chemistry and chemical engineering concepts.  
 Use the **sidebar navigation** (at the top-left) to switch between modules:
 
-- ⚗️ **Kinetics** — Reaction rates, concentration vs time, half-lives, Maxwell-Boltzmann distribution.  
-- 🔥 **Thermodynamics** — ΔG calculations, spontaneity, energy feasibility.  
-- ⚖️ **Equilibrium** — Equilibrium constants, percent conversion, Le Châtelier’s Principle.  
-- 🧪 **Acids & Bases** — pH changes, titration curves, process control.  
-- 🌡️ **Intermolecular Forces (IMF)** — Vapor pressure, phase predictions, molecular interactions.
+- **Intermolecular Forces (IMF)** — Potential energy, vapor pressure, phase properties.
+- **Properties** — Periodic trends, intermolecular forces, molecular properties.  
+- **Kinetics** — Reaction rates, concentration vs time, half-lives, Maxwell-Boltzmann distribution.  
+- **Thermodynamics** — Reaction energy profiles, heat curves, kinetics.  
+- **Acids & Bases** — pH changes, titration curves, absorbance vs concentration.  
 """)
 
 st.markdown("---")
