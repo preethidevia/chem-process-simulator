@@ -132,7 +132,7 @@ st.info(
 )
 
 st.sidebar.markdown("""
-### Equations
+### Equations:
 
 **Reaction Enthalpy**
 ΔH = ΣH(products) − ΣH(reactants)

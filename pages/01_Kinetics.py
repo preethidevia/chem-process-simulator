@@ -68,7 +68,7 @@ elif order == "First Order":
 else:
     st.sidebar.info("Half-life increases as concentration decreases (2nd order).")
 st.sidebar.markdown(f"""
-**Equations Used:**
+**Equations:**
 
 - Rate Law: {rate_law}
 - Zeroth Order: [A] = [A₀] − kt
@@ -136,7 +136,7 @@ if "Nuclear" in compound:
     )
 
 st.markdown("""
-### Real-Life Graph Interpretation
+### Graph Interpretation
 - Zeroth Order: Rate independent of concentration. Linear decrease.
 - First Order: Half-life constant, typical for radioactive decay.
 - Second Order: Rate depends on [A]^2, e.g., dimerization.
